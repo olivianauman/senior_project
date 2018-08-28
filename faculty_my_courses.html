@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="cs_project">
+<!-- cute little heading with our logo :-) -->
+<nav class="navbar navbar-light bg-warning">
+  <a class="navbar-brand">
+    <img src="transparent_logo.gif" width="250" height="90">
+  </a>
+</nav>
+<head>
+    <title>Faculty Courses</title>
+        <!--Boostrap Code-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Bootstrap JS-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!--link to angular-->
+    <script src="angular.min.js"></script>
+    <!-- angular code-->
+    <script src="cs.module.js"></script>
+    <script src="data.tutorcs.controller.js"></script>
+    <script src="cs.filter.js"></script>
+</head>
+<body ng-controller="dataControl">
+  <!-- This is the menu bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary" ng-init="checkifloggedin()">
+    <!-- this is a place to put the title of the page, or a logo -->
+    <a class="navbar-brand text-warning" href="index_faculty.html"><b>Faculty Homepage</b></a>
+
+    <!-- definition of the buton you see if the screen is too small and you can't fit the full menu -->
+    <!-- make sure the data-target and aria-controls match the div with the content you want to show -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+      <!-- the id should match the data-target and aria-controls for the navbar-toggler above if you want this to show up on small screens when they expand the menu -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+      <ul class="navbar-nav">
+          <li class="nav-item">
+              <a class="nav-link text-light" href="index_faculty.html">Accounts</a>
+          </li>
+             <li class="nav-item">
+              <a class="nav-link text-light" href="faculty_my_courses.html">My Courses<span class="sr-only">(current)</span></a>
+          </li>
+        <li class="nav-item">
+          <a class="nav-link text-light" href="login.html">Log Out</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <br>
+  <div class="container-fluid">
+    <div class="col-lg mt-5">
+      <h2 class="text-center">Current Courses</h2>
+      <table class="table table-bordered table-hover table-sm" ng-init="getFacultyCourses()">
+        <thead>
+          <tr class="bg-warning text-center">
+            <th scope="col">Course ID</th>
+            <th scope="col">Course Name</th>
+            <th scope="col">Course Documents</th>
+          </tr>
+        </thead>
+        <tbody ng-repeat="course in courses | filter:query">
+          <!-- Viewing course -->
+          <tr class="text-center">
+            <td scope="col">{{course.course_id}}</td>
+            <td scope="col">{{course.name}}</td>
+            <td scope="col">
+              <button type="button" class="btn btn-info" style="width: 45%;" data-toggle="modal" ng-click="getDocuments(course.course_id)" data-target="#view">View</button>
+              <button type="button" class="btn btn-success" style="width: 45%;" data-toggle="modal" ng-click="viewingDoc(course.course_id)" data-target="#add">Add</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+<!-- Modal for viewing course documents-->
+<div class="modal fade" id="view" role="dialog" ng-controller="dataControl">
+  <!-- Modal content-->
+  <div class="modal-dialog">
+    <!-- display loading if we are loading course docs -->
+    <div class="text-info" ng-if="loading">
+      Loading..
+    </div>
+    <!-- if we are done loading but don't have docs, show 'no docs' text -->
+    <div class="text-danger" ng-if="!loading && documents.length < 1">
+      No course docs to show
+    </div>
+    <!-- show course docs if we have them -->
+    <div class="modal-content" ng-if="!loading && documents.length > 0">
+      <div class="modal-header">
+        <h4 class="modal-title text-center">Course Documents</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="card mt-2 mb-4 border-info" ng-repeat="doc in documents | filter:query">
+          <span ng-init="doc.show = false"></span>
+          <div class="card-body">
+            <h5 class="card-title">
+              {{ doc.doc_name }}
+              <span class="btn dropdown-toggle float-right" style="display:inline-block;" ng-click="doc.show = !doc.show"></span>
+            </h5>
+            <hr ng-if="doc.show">
+            <h6 class="card-subtitle mb-2" ng-if="doc.show">{{ doc.doc_data }}</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal for adding course documents-->
+<div class="modal fade" id="add" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title text-center">Add a Course Document</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form class="col-md-5" name="addDocumentForm" novalidate>
+          <div class="form-group" ng-class="{ 'text-danger': addDocumentForm.doc_name.$invalid && addDocumentForm.doc_name.$touched, 'text-success': !addDocumentForm.doc_name.$invalid && addDocumentForm.doc_name.$touched }">
+            <label class="form-control-label" for="doc_name"><b>Document Name: </b></label>
+              <input type="text" class="form-control" style="width: 400px;" ng-class="{ 'is-invalid': addDocumentForm.doc_name.$invalid && addDocumentForm.doc_name.$touched, 'is-valid': !addDocumentForm.doc_name.$invalid && addDocumentForm.doc_name.$touched }" name="doc_name" ng-model="document.doc_name" ng-minlength="4" id="doc_name" required/>
+              <div ng-show="addDocumentForm.doc_name.$invalid && addDocumentForm.doc_name.$touched" ></div>
+          </div>
+          <div class="form-group" ng-class="{ 'text-danger': addDocumentForm.doc_data.$invalid && addDocumentForm.doc_data.$touched, 'text-success': !addDocumentForm.doc_data.$invalid && addDocumentForm.doc_data.$touched }">
+            <label class="form-control-label" for="doc_data"><b>Document Text: </b></label>
+              <textarea class="form-control" style="width: 400px;" rows="10" cols="30" ng-class="{ 'is-invalid': addDocumentForm.doc_data.$invalid && addDocumentForm.doc_data.$touched, 'is-valid': !addDocumentForm.doc_data.$invalid && addDocumentForm.doc_data.$touched }" name="doc_data" ng-model="document.doc_data" ng-minlength="4" id="doc_data" required></textarea>
+              <div ng-show="addDocumentForm.doc_data.$invalid && addDocumentForm.doc_data.$touched" ></div>
+          </div>
+          <div>
+              <button class="btn btn-success mt-2" ng-click="addDocument(document)">Add Document</button>
+         </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</html>

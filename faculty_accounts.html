@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="cs_project">
+<!-- cute little heading with our logo :-) -->
+<nav class="navbar navbar-light bg-warning">
+  <a class="navbar-brand">
+    <img src="transparent_logo.gif" width="250" height="90">
+  </a>
+</nav>
+<head>
+    <title>Faculty Accounts</title>
+        <!--Boostrap Code-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Bootstrap JS-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!--link to angular-->
+    <script src="angular.min.js"></script>
+    <!-- angular code-->
+    <script src="cs.module.js"></script>
+    <script src="data.tutorcs.controller.js"></script>
+    <script src="cs.filter.js"></script>
+</head>
+<body ng-controller="dataControl">
+    <!-- This is the menu bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+        
+        <!-- this is a place to put the title of the page, or a logo -->
+
+      <a class="navbar-brand text-warning" href="index_faculty.html"><b>Faculty Homepage</b></a>
+      
+      <!-- definition of the buton you see if the screen is too small and you can't fit the full menu -->
+      <!-- make sure the data-target and aria-controls match the div with the content you want to show -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+        <!-- the id should match the data-target and aria-controls for the navbar-toggler above if you want this to show up on small screens when they expand the menu -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link text-light" href="index_faculty.html">Accounts<span class="sr-only">(current)</span></a>
+            </li>
+                <li class="nav-item">
+                <a class="nav-link text-light" href="faculty_my_courses.html">My Courses</a>
+            </li>           
+            <li class="nav-item">
+                <a class="nav-link text-light" href="login.html">Log Out</a>
+            </li>                              
+        </ul>
+        
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="col-lg mt-5">
+        <button type="button" class="btn btn-success" style="width: 15%;" data-toggle="modal" data-target="#single">Add Single Account</button>
+        <button type="button" class="btn btn-success" style="width: 15%;" data-toggle="modal" data-target="#csv">Add Bulk Account CSV</button>
+        <br>
+        <br>
+        <h2 class="text-center">My Student Accounts</h2>
+        <table class="table table-bordered table-hover table-sm" ng-init="getStudentAccounts()">
+          <thead>
+            <tr class="bg-warning text-center">
+              <th scope="col">HawkID</th>
+              <th scope="col">First Name</th>
+              <th scope="col">Last Name</th>
+              <th scope="col">Administrator?</th>
+              <th scope="col">Professor?</th>
+              <th scope="col">Tutor?</th>
+              <th scope="col">Student?</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody ng-repeat="user in users | filter:query">
+            <span ng-init="setUserEditMode(false, user)"></span>
+
+            <!-- Viewing user -->
+            <tr class="text-center" ng-if="!user.editMode">
+              <td scope="col">{{user.hawk_id}}</td>
+              <td scope="col">{{user.first_name}}</td>
+              <td scope="col">{{user.last_name}}</td>
+              <td scope="col" ng-class="{ 'text-success': user.administrator == '1', 'text-danger': user.administrator == '0' }">{{ (user.administrator == 1) ? 'Yes' : 'No' }}</td>
+              <td scope="col" ng-class="{ 'text-success': user.professor == '1', 'text-danger': user.professor == '0' }">{{ (user.professor == 1) ? 'Yes' : 'No' }}</td>
+              <td scope="col" ng-class="{ 'text-success': user.tutor == '1', 'text-danger': user.tutor == '0' }">{{ (user.tutor == 1) ? 'Yes' : 'No' }}</td>
+              <td scope="col" ng-class="{ 'text-success': user.student == '1', 'text-danger': user.student == '0' }">{{ (user.student == 1) ? 'Yes' : 'No' }}</td>
+              <td scope="col">
+                <button class="btn btn-info mr-2" style="width: 45%;" ng-click="setUserEditMode(true, user)" ng-disabled="editUser != null">Edit</button>
+                <button class="btn btn-danger" style="width: 45%;" ng-click="deleteUser(user.first_name, user.last_name, user.hawk_id)">Delete</button>
+              </td>            
+            </tr>
+
+            <!-- Editing user -->
+            <form name="editUserForm">
+              <tr class="text-center" ng-if="user.editMode">
+                <td scope="col">
+                  <input type="text" class="form-control" value="{{editUser.hawk_id}}" name="hawk_id" ng-model="editUser.hawk_id" ng-minlength="2" required>
+                </td>
+                <td scope="col">
+                  <input type="text" class="form-control" value="{{editUser.first_name}}" name="first_name" ng-model="editUser.first_name" ng-minlength="1" required>
+                </td>
+                <td scope="col">
+                  <input type="text" class="form-control" value="{{editUser.last_name}}" name="last_name" ng-model="editUser.last_name" ng-minlength="1" required>
+                </td>
+                <td scope="col">
+                  <select class="form-control" name="administrator" ng-model="editUser.administrator">
+                    <option value="false" ng-selected="editUser.administrator === '0'">No</option>
+                    <option value="true" ng-selected="editUser.administrator === '1'">Yes</option>
+                  </select>
+                </td>
+                <td scope="col">
+                  <select class="form-control" name="professor" ng-model="editUser.professor">
+                    <option value="false" ng-selected="editUser.professor === '0'">No</option>
+                    <option value="true" ng-selected="editUser.professor === '1'">Yes</option>
+                  </select>
+                </td>
+                <td scope="col">
+                  <select class="form-control" name="tutor" ng-model="editUser.tutor">
+                    <option value="false" ng-selected="editUser.tutor === '0'">No</option>
+                    <option value="true" ng-selected="editUser.tutor === '1'">Yes</option>
+                  </select>
+                </td>
+                <td scope="col">
+                  <select class="form-control" name="student" ng-model="editUser.student">
+                    <option value="false" ng-selected="editUser.student === '0'">No</option>
+                    <option value="true" ng-selected="editUser.student === '1'">Yes</option>
+                  </select>
+                </td>
+                <td scope="col">
+                  <button class="btn btn-success mr-2" style="width: 45%;" ng-click="updateUser(editUser, user)">Save</button>
+                  <button class="btn btn-outline-danger" style="width: 45%;" ng-click="setUserEditMode(false, user)">Cancel</button>
+                </td>            
+              </tr>
+            </form>
+  
+          </tbody>
+        </table>
+      </div>
+    </div>
+</body>
+<!-- Modal for single user-->
+<div class="modal fade" id="single" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add a Single Student User</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form class="col-md-5" name="newStudentAccountForm" novalidate>
+          <div class="form-group" ng-class="{ 'text-danger': newStudentAccountForm.hawk_id.$invalid && newStudentAccountForm.hawk_id.$touched, 'text-success': !newStudentAccountForm.hawk_id.$invalid && newStudentAccountForm.hawk_id.$touched }">
+            <label class="form-control-label" for="hawk_id"><b>HawkID: </b></label>
+              <input type="text" class="form-control" style="width: 400px;" ng-class="{ 'is-invalid': newStudentAccountForm.hawk_id.$invalid && newStudentAccountForm.hawk_id.$touched, 'is-valid': !newStudentAccountForm.hawk_id.$invalid && newStudentAccountForm.hawk_id.$touched }" name="hawk_id" ng-model="account.hawk_id" ng-minlength="4" id="hawk_id" required/>
+              <div ng-show="newStudentAccountForm.hawk_id.$invalid && newStudentAccountForm.hawk_id.$touched" ></div>
+          </div>
+          <div class="form-group" ng-class="{ 'text-danger': newStudentAccountForm.first_name.$invalid && newStudentAccountForm.first_name.$touched, 'text-success': !newStudentAccountForm.first_name.$invalid && newStudentAccountForm.first_name.$touched }">
+              <label class="form-control-label" for="first_name"><b>First Name: </b></label>
+              <input type="text" class="form-control" style="width: 400px;" ng-class="{ 'is-invalid': newStudentAccountForm.first_name.$invalid && newStudentAccountForm.first_name.$touched, 'is-valid': !newStudentAccountForm.first_name.$invalid && newStudentAccountForm.first_name.$touched }" name="first_name" ng-model="account.first_name" ng-minlength="2" id="first_name" required/>
+              <div ng-show="newStudentAccountForm.first_name.$invalid && newStudentAccountForm.first_name.$touched" ></div>
+          </div>
+          <div class="form-group" ng-class="{ 'text-danger': newStudentAccountForm.last_name.$invalid && newStudentAccountForm.last_name.$touched, 'text-success': !newStudentAccountForm.last_name.$invalid && newStudentAccountForm.last_name.$touched }">
+              <label class="form-control-label" for="last_name"><b>Last Name: </b></label>
+              <input type="text" class="form-control"  style="width: 400px;"ng-class="{ 'is-invalid': newStudentAccountForm.last_name.$invalid && newStudentAccountForm.last_name.$touched, 'is-valid': !newStudentAccountForm.last_name.$invalid && newStudentAccountForm.last_name.$touched }" name="last_name" ng-model="account.last_name" ng-minlength="2" id="last_name" required/>
+              <div ng-show="newStudentAccountForm.last_name.$invalid && newStudentAccountForm.last_name.$touched" ></div>
+          </div>
+              <div class="form-group" ng-class="{ 'text-danger': newStudentAccountForm.password.$invalid && newStudentAccountForm.password.$touched, 'text-success': !newStudentAccountForm.password.$invalid && newStudentAccountForm.password.$touched }">
+              <label class="form-control-label" for="password"><b>Password: </b></label>
+              <input type="text" class="form-control" style="width: 400px;" ng-class="{ 'is-invalid': newStudentAccountForm.password.$invalid && newStudentAccountForm.password.$touched, 'is-valid': !newStudentAccountForm.password.$invalid && newStudentAccountForm.password.$touched }" name="password" ng-model="account.password" ng-minlength="2" id="password" required/>
+              <div ng-show="newStudentAccountForm.password.$invalid && newStudentAccountForm.password.$touched" ></div>
+          </div>
+              <div class="form-group" ng-class="{ 'text-danger': newStudentAccountForm.course_id.$invalid && newStudentAccountForm.course_id.$touched, 'text-success': !newStudentAccountForm.course_id.$invalid && newStudentAccountForm.course_id.$touched }">
+              <label class="form-control-label" for="course_id"><b>Course ID: </b></label>
+              <input type="text" class="form-control" style="width: 400px;" ng-class="{ 'is-invalid': newStudentAccountForm.course_id.$invalid && newStudentAccountForm.course_id.$touched, 'is-valid': !newStudentAccountForm.course_id.$invalid && newStudentAccountForm.course_id.$touched }" name="course_id" ng-model="account.course_id" ng-minlength="6" id="course_id" required/>
+              <div ng-show="newStudentAccountForm.course_id.$invalid && newStudentAccountForm.course_id.$touched"></div>
+          </div>
+          <div>
+              <button class="btn btn-success mt-2" ng-click="newStudentAccount(account)">Add Account</button>
+         </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal for bulk csv-->
+<div class="modal fade" id="csv" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title text-center">Add a CSV of Student Users</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Some text in the modal.</p>
+      </div>
+      <div class="modal-footer text-senter">
+        <button type="button" class="btn btn-success">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+</html>

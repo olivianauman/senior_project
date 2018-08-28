@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!--This is the HTML for our initial login page. Here users will see just recent news about what is going on with the program and be able to login to get more personalized functionality!-->
+<html>
+<style>
+/*STYLING FOR DIV BOX TEXT*/
+.mydiv{
+  position: relative;
+  width: 500px;
+  height: 500px;
+  background-color: #ffc728;
+  margin: 0 auto;
+  padding: 50px;
+}
+</style>
+<head>
+    <title> TutorCS </title>
+
+    <!--Boostrap Code-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Bootstrap JS-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!--app's angular code-->
+    <script src="angular.min.js"></script>
+    <script src="cs.module.js"></script>
+    <script src="data.tutorcs.controller.js"></script>
+</head>
+
+<body style="background-color: grey" ng-app="cs_project">
+
+    <!-- cute little heading with our logo :-) -->
+    <nav class="navbar navbar-light bg-warning">
+      <a class="navbar-brand">
+        <img src="transparent_logo.gif" width="250" height="90">
+      </a>
+    </nav>
+    <br>
+    <div class="container" style="color: bg-warning; text-align:center;font-size:800%;">
+        <h1><b>Welcome to TutorCS!</b></h1>
+        <h2>Please log in.</h2>
+    </div>
+    <br>
+
+    <!-- initialize account.role to student so that angular will default to the student role -->
+    <div ng-init="account.role = 'student'"></div>
+
+    <div ng-controller="dataControl">
+      <div class="mydiv card card-body w-25 text-center">
+         <form  name="loginForm">
+            <!-- hawkId for account -->
+            <div class="form-group" ng-class="{ 'text-danger': loginForm.hawkId.$invalid && loginForm.hawkId.$touched, 'text-success': !loginForm.hawkId.$invalid && loginForm.hawkId.$touched }">
+                <label class="form-control-label" for="hawkId"><b>Hawk ID: </b></label>
+                <input type="text" class="form-control" minlength="2" ng-class="{ 'is-invalid': loginForm.hawkId.$invalid && loginForm.hawkId.$touched, 'is-valid': !loginForm.hawkId.$invalid && loginForm.hawkId.$touched }" name="hawkId" ng-model="account.hawkId" ng-minlength="2" id="hawkId" required/>
+                <div class="text-danger text-left" ng-show="loginForm.hawkId.$invalid && loginForm.hawkId.$touched">Required</div>
+            </div>
+
+            <!-- password for account -->
+            <div class="form-group" ng-class="{ 'text-danger': loginForm.password.$invalid && loginForm.password.$touched, 'text-success': !loginForm.password.$invalid && loginForm.password.$touched }">
+                <label class="form-control-label" for="password"><b>Password:</b></label>
+                <input type="password" class="form-control" minlength="6" ng-class="{ 'is-invalid': loginForm.password.$invalid && loginForm.password.$touched, 'is-valid': !loginForm.password.$invalid && loginForm.password.$touched }" name="password" ng-model="account.password" ng-minlength="6" id="password" required/>
+                <div class="text-danger text-left" ng-show="loginForm.password.$invalid && loginForm.password.$touched">Required</div>
+            </div>
+
+            <!--Account role-->
+            <label for="role"><b>Role:</b></label>
+            <select class="form-control" id="role" ng-model="account.role" required>
+                <option value="student">Student</option>
+                <option value="tutor">Tutor</option>
+                <option value="professor">Professor</option>
+                <option value="administrator">Administrator</option>
+            </select>
+
+            <br>
+
+            <button ng-click="login(account)" class="btn btn-warning btn-sml"><b>Login</b></button>
+        </form>
+      </div>
+    </div>
+</body>
+</html>

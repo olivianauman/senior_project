@@ -1,0 +1,115 @@
+<!doctype html>
+<html ng-app="cs_project">
+<head>
+    <title>Add New Account</title>
+
+    <!--Boostrap Code-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Bootstrap JS-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!--link to angular-->
+    <!-- "../angular/angular/min.js"-->
+    <script src="angular.min.js"></script>
+
+    <!-- angular code-->
+    <script src="cs.module.js"></script>
+    <script src="data.tutorcs.controller.js"></script>
+    <script src="cs.filter.js"></script>
+
+</head>
+<body ng-controller="dataControl">
+  <!-- cute little heading with our logo :-) -->
+  <nav class="navbar navbar-light bg-warning">
+    <a class="navbar-brand">
+      <img src="transparent_logo.gif" width="250" height="90">
+    </a>
+  </nav>
+  <!-- This is the menu bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary" ng-init="checkifloggedin()">
+      <a class="navbar-brand text-warning" href="index_admin.html"><b>Admin Homepage</b></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link text-light" href="index_admin.html">Accounts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="admin_add_account.html">Add Acount</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="login.html">Log Out</a>
+          </li>
+        </ul>
+      </div>
+  </nav>
+  <br>
+  <div class="card-body text-center">
+      <div class="container-fluid text-center">
+          <h4 class="row justify-content-center"><span class="col-sm-5 text-left pb-4">Add an account</span></h4>
+          <div class="row justify-content-center">
+              <form class="col-md-5" name="newAccountForm" novalidate>
+                  <!-- force admin to pick a role so we can show the right fields -->
+                  <div ng-init="account.role = ''"></div>
+
+                  <!-- Account role, this helps determine what fields will display -->
+                  <label for="role"><b>Role:</b></label>
+                  <select class="form-control" id="role" ng-model="account.role" required>
+                      <option value="student">Student</option>
+                      <option value="tutor">Tutor</option>
+                      <option value="professor">Professor</option>
+                      <option value="administrator">Administrator</option>
+                  </select>
+                  <p class="text-info text-left">
+                    <small>Hint: If you want to create a user with more than one role, simply edit their roles from the <a class="text-success" href="index_admin.html">accounts</a> page</small>
+                  </p>
+                  <!-- account hawk id -->
+                  <div class="form-group" ng-class="{ 'text-danger': newAccountForm.hawk_id.$invalid && newAccountForm.hawk_id.$touched, 'text-success': !newAccountForm.hawk_id.$invalid && newAccountForm.hawk_id.$touched }">
+                      <label class="form-control-label" for="hawk_id"><b>HawkID: </b></label>
+                      <input type="text" class="form-control" ng-class="{ 'is-invalid': newAccountForm.hawk_id.$invalid && newAccountForm.hawk_id.$touched, 'is-valid': !newAccountForm.hawk_id.$invalid && newAccountForm.hawk_id.$touched }" name="hawk_id" ng-model="account.hawk_id" ng-minlength="4" id="hawk_id" required/>
+                      <div ng-show="newAccountForm.hawk_id.$invalid && newAccountForm.hawk_id.$touched" ></div>
+                  </div>
+                  <!-- password -->
+                  <div class="form-group" ng-class="{ 'text-danger': newAccountForm.password.$invalid && newAccountForm.password.$touched, 'text-success': !newAccountForm.password.$invalid && newAccountForm.password.$touched }">
+                      <label class="form-control-label" for="password"><b>Password: </b></label>
+                      <input type="password" class="form-control" ng-class="{ 'is-invalid': newAccountForm.password.$invalid && newAccountForm.password.$touched, 'is-valid': !newAccountForm.password.$invalid && newAccountForm.password.$touched }" name="password" ng-model="account.password" ng-minlength="6" id="password" required/>
+                      <div ng-show="newAccountForm.password.$invalid && newAccountForm.password.$touched" ></div>
+                  </div>
+                  <!-- first name -->
+                  <div class="form-group" ng-class="{ 'text-danger': newAccountForm.first_name.$invalid && newAccountForm.first_name.$touched, 'text-success': !newAccountForm.first_name.$invalid && newAccountForm.first_name.$touched }">
+                      <label class="form-control-label" for="first_name"><b>First Name: </b></label>
+                      <input type="text" class="form-control" ng-class="{ 'is-invalid': newAccountForm.first_name.$invalid && newAccountForm.first_name.$touched, 'is-valid': !newAccountForm.first_name.$invalid && newAccountForm.first_name.$touched }" name="first_name" ng-model="account.first_name" ng-minlength="2" id="first_name" required/>
+                      <div ng-show="newAccountForm.first_name.$invalid && newAccountForm.first_name.$touched" ></div>
+                  </div>
+                  <!-- surname -->
+                  <div class="form-group" ng-class="{ 'text-danger': newAccountForm.last_name.$invalid && newAccountForm.last_name.$touched, 'text-success': !newAccountForm.last_name.$invalid && newAccountForm.last_name.$touched }">
+                      <label class="form-control-label" for="last_name"><b>Last Name: </b></label>
+                      <input type="text" class="form-control" ng-class="{ 'is-invalid': newAccountForm.last_name.$invalid && newAccountForm.last_name.$touched, 'is-valid': !newAccountForm.last_name.$invalid && newAccountForm.last_name.$touched }" name="last_name" ng-model="account.last_name" ng-minlength="2" id="last_name" required/>
+                      <div ng-show="newAccountForm.last_name.$invalid && newAccountForm.last_name.$touched" ></div>
+                  </div>
+                  <!-- course_id, only shown when tutor, professor, or student -->
+                  <div class="form-group" ng-class="{ 'text-danger': newAccountForm.course_id.$invalid && newAccountForm.course_id.$touched, 'text-success': !newAccountForm.course_id.$invalid && newAccountForm.course_id.$touched }" ng-if="account.role == 'student' || account.role == 'tutor' || account.role == 'professor'">
+                      <label class="form-control-label" for="course_id"><b>Course ID: </b></label>
+                      <input type="text" class="form-control" ng-class="{ 'is-invalid': newAccountForm.course_id.$invalid && newAccountForm.course_id.$touched, 'is-valid': !newAccountForm.course_id.$invalid && newAccountForm.course_id.$touched }" name="course_id" ng-model="account.course_id" ng-minlength="7" ng-maxlength="7" id="course_id" required/>
+                      <div ng-show="newAccountForm.course_id.$invalid && newAccountForm.course_id.$touched" ></div>
+                  </div>
+                  <!-- phone number, only shown when tutor or student -->
+                  <div class="form-group" ng-class="{ 'text-danger': newAccountForm.phone_number.$invalid && newAccountForm.phone_number.$touched, 'text-success': !newAccountForm.phone_number.$invalid && newAccountForm.phone_number.$touched }" ng-if="account.role == 'student' || account.role == 'tutor'">
+                      <label class="form-control-label" for="phone_number"><b>Phone Number (including area code): </b></label>
+                      <input type="text" class="form-control" ng-class="{ 'is-invalid': newAccountForm.phone_number.$invalid && newAccountForm.phone_number.$touched, 'is-valid': !newAccountForm.phone_number.$invalid && newAccountForm.phone_number.$touched }" name="phone_number" ng-model="account.phone_number" ng-minlength="10" id="phone_number"/>
+                      <div ng-show="newAccountForm.phone_number.$invalid && newAccountForm.phone_number.$touched" ></div>
+                  </div>
+                  <!-- submit -->
+                  <div>
+                      <button class="btn btn-success mt-2" ng-click="newAccount(account)">Add Account</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+</body>
+</html>

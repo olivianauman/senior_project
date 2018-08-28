@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html ng-app="cs_project">
+<!-- cute little heading with our logo :-) -->
+<nav class="navbar navbar-light bg-warning">
+  <a class="navbar-brand">
+    <img src="transparent_logo.gif" width="250" height="90">
+  </a>
+</nav>
+<head>
+    <title>Admin Homepage</title>
+        <!--Boostrap Code-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Bootstrap JS-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!--link to angular-->
+    <script src="angular.min.js"></script>
+    <script src="cs.module.js"></script>
+    <script src="data.tutorcs.controller.js"></script>
+</head>
+<body ng-controller="dataControl">
+    <!-- This is the menu bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+      <a class="navbar-brand text-warning" href="index_admin.html"><b>Admin Homepage</b></a>
+
+      <!-- definition of the buton you see if the screen is too small and you can't fit the full menu -->
+      <!-- make sure the data-target and aria-controls match the div with the content you want to show -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+              <a class="nav-link text-light active" href="index_admin.html">Accounts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="admin_add_account.html">Add Account</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="login.html">Log Out</a>
+          </li>
+
+        </ul>
+
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="col-lg mt-5">
+        <h2 class="text-center">All accounts</h2>
+        <table class="table table-bordered table-hover table-sm" ng-init="getAccounts()">
+          <thead>
+            <tr class="bg-warning text-center">
+              <th scope="col">HawkID</th>
+              <th scope="col">First Name</th>
+              <th scope="col">Last Name</th>
+              <th scope="col">Administrator?</th>
+              <th scope="col">Professor?</th>
+              <th scope="col">Tutor?</th>
+              <th scope="col">Student?</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody ng-repeat="user in users | filter:query">
+            <span ng-init="setUserEditMode(false, user)"></span>
+
+            <!-- Viewing user -->
+            <tr class="text-center" ng-if="!user.editMode">
+              <td scope="col">{{user.hawk_id}}</td>
+              <td scope="col">{{user.first_name}}</td>
+              <td scope="col">{{user.last_name}}</td>
+              <td scope="col" ng-class="{ 'text-success': user.administrator == '1', 'text-danger': user.administrator == '0' }">{{ (user.administrator == 1) ? 'Yes' : 'No' }}</td>
+              <td scope="col" ng-class="{ 'text-success': user.professor == '1', 'text-danger': user.professor == '0' }">{{ (user.professor == 1) ? 'Yes' : 'No' }}</td>
+              <td scope="col" ng-class="{ 'text-success': user.tutor == '1', 'text-danger': user.tutor == '0' }">{{ (user.tutor == 1) ? 'Yes' : 'No' }}</td>
+              <td scope="col" ng-class="{ 'text-success': user.student == '1', 'text-danger': user.student == '0' }">{{ (user.student == 1) ? 'Yes' : 'No' }}</td>
+              <td scope="col">
+                <button class="btn btn-info mr-2" style="width: 45%;" ng-click="setUserEditMode(true, user)" ng-disabled="editUser != null">Edit</button>
+                <button class="btn btn-danger" style="width: 45%;" ng-click="deleteUser(user.first_name, user.last_name, user.hawk_id)">Delete</button>
+              </td>
+            </tr>
+
+            <!-- Editing user -->
+            <form name="editUserForm">
+              <tr class="text-center" ng-if="user.editMode">
+                <!-- hawk_ids are permanent and may not be editted -->
+                <td scope="col">{{user.hawk_id}}</td>
+                <td scope="col">
+                  <input type="text" class="form-control" value="{{editUser.first_name}}" name="first_name" ng-model="editUser.first_name" ng-minlength="1" required>
+                </td>
+                <td scope="col">
+                  <input type="text" class="form-control" value="{{editUser.last_name}}" name="last_name" ng-model="editUser.last_name" ng-minlength="1" required>
+                </td>
+                <td scope="col">
+                  <select class="form-control" name="administrator" ng-model="editUser.administrator" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                  </select>
+                </td>
+                <td scope="col">
+                  <select class="form-control" name="professor" ng-model="editUser.professor" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                  </select>
+                </td>
+                <td scope="col">
+                  <select class="form-control" name="tutor" ng-model="editUser.tutor" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                  </select>
+                </td>
+                <td scope="col">
+                  <select class="form-control" name="student" ng-model="editUser.student" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                  </select>
+                </td>
+                <td scope="col">
+                  <button class="btn btn-success mr-2" style="width: 45%;" ng-click="updateUser(editUser, user)">Save</button>
+                  <button class="btn btn-outline-danger" style="width: 45%;" ng-click="setUserEditMode(false, user)">Cancel</button>
+                </td>
+              </tr>
+            </form>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+</body>
+</html>

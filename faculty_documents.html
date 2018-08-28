@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="cs_project">
+<!-- cute little heading with our logo :-) -->
+<nav class="navbar navbar-light bg-warning">
+  <a class="navbar-brand">
+    <img src="transparent_logo.gif" width="250" height="90">
+  </a>
+</nav>
+<head>
+    <title>Course Documents</title>
+        <!--Boostrap Code-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Bootstrap JS-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!--link to angular-->
+    <script src="angular.min.js"></script>
+    <!-- angular code-->
+    <script src="cs.module.js"></script>
+    <script src="data.tutorcs.controller.js"></script>
+    <script src="cs.filter.js"></script>
+</head>
+<!-- This is the menu bar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-secondary" ng-init="checkifloggedin()">
+            
+            <!-- this is a place to put the title of the page, or a logo -->
+
+          <a class="navbar-brand text-warning" href="index_faculty.html"><b>Faculty Homepage</b></a>
+          
+          <!-- definition of the buton you see if the screen is too small and you can't fit the full menu -->
+          <!-- make sure the data-target and aria-controls match the div with the content you want to show -->
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+            <!-- the id should match the data-target and aria-controls for the navbar-toggler above if you want this to show up on small screens when they expand the menu -->
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="faculty_accounts.html">Accounts</a>
+                </li>
+                   <li class="nav-item">
+                    <a class="nav-link text-light" href="faculty_my_courses.html">My Courses</a>
+                </li>
+              <li class="nav-item">
+                <a class="nav-link text-light" href="login.html">Log Out</a>
+              </li>                              
+            </ul>
+            
+          </div>
+        </nav>
+        <br>
+        <table class="table table-bordered table-hover table-sm">
+<body ng-controller="dataControl">
+    <div class="container-fluid">
+      <div class="col-lg mt-5">
+        <h2 class="text-center">Course Documents</h2>
+      </div>
+    </div>
+</body>               
+</html>
